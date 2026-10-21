@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Large raw archive files (55MB each - DO NOT COMMIT TO GIT)
+*.zip
+data_raw/
+
+# Environment and sensitive keys
+.env
+.venv
+env/
+venv/
+
+# Uploaded test media
+static/uploads/*
+!static/uploads/.gitkeep
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

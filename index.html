@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bích Hiền (@bchhniiee_) · Instagram Direct</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #000000;
+      --card-bg: #121212;
+      --header-bg: rgba(0, 0, 0, 0.85);
+      --input-bg: #262626;
+      --bubble-target: #262626;
+      --bubble-target-text: #f5f5f5;
+      --bubble-user: linear-gradient(135deg, #373bfe 0%, #8c35f2 100%);
+      --bubble-user-text: #ffffff;
+      --text-muted: #a8a8a8;
+      --border-color: #262626;
+      --active-green: #10b981;
+      --ig-blue: #0095f6;
+      --ig-heart: #ed4956;
+      --radius-bubble: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Main Container */
+    .app-container {
+      width: 100%;
+      max-width: 500px;
+      height: 100vh;
+      background-color: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border-left: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+    }
+
+    @media (min-width: 600px) {
+      .app-container {
+        height: 94vh;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      }
+    }
+
+    /* Instagram Header */
+    .chat-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      z-index: 20;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 44px;
+      height: 44px;
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #222;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: 1px;
+      right: 1px;
+      width: 13px;
+      height: 13px;
+      background-color: var(--active-green);
+      border: 2px solid var(--bg-main);
+      border-radius: 50%;
+    }
+
+    .user-info h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .verified-icon {
+      color: var(--ig-blue);
+    }
+
+    .user-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #fff;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 50%;
+      transition: opacity 0.2s;
+    }
+
+    .icon-btn:hover {
+      opacity: 0.7;
+    }
+
+    /* Quick suggestions bar */
+    .quick-chips-wrapper {
+      padding: 8px 14px;
+      background: #000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      overflow-x: auto;
+      white-space: nowrap;
+      display: flex;
+      gap: 8px;
+      scrollbar-width: none;
+    }
+
+    .quick-chips-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip-btn {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #e5e5e5;
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .chip-btn:hover {
+      background: #2a2a2a;
+      border-color: #555;
+    }
+
+    /* Chat Messages Stream */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+      background: #000;
+      position: relative;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 2px;
+    }
+
+    /* Burst Indicator */
+    .burst-status-bar {
+      align-self: center;
+      font-size: 11px;
+      color: var(--ig-blue);
+      background: rgba(0, 149, 246, 0.1);
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-bottom: 4px;
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    /* Message Turn Rows */
+    .msg-turn {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-width: 80%;
+      animation: fadeIn 0.2s ease-out;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-turn.user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .msg-turn.target {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .target-group-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      position: relative;
+    }
+
+    .target-avatar-mini {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 2px;
+      flex-shrink: 0;
+    }
+
+    .bubbles-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      position: relative;
+      align-items: flex-end;
+    }
+
+    .msg-turn.target .bubbles-stack {
+      align-items: flex-start;
+    }
+
+    /* Bubble Styles */
+    .bubble-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+    }
+
+    .bubble {
+      padding: 10px 15px;
+      font-size: 14px;
+      line-height: 1.45;
+      word-wrap: break-word;
+      user-select: text;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.1s ease;
+    }
+
+    .bubble:active {
+      transform: scale(0.98);
+    }
+
+    /* Contiguous Turn Border Radius for Instagram */
+    .msg-turn.user .bubble {
+      background: var(--bubble-user);
+      color: var(--bubble-user-text);
+      border-radius: 18px 18px 4px 18px;
+    }
+
+    .msg-turn.user .bubble-wrapper:not(:last-child) .bubble {
+      border-radius: 18px 18px 4px 18px;
+    }
+
+    .msg-turn.user .bubble-wrapper:not(:first-child) .bubble {
+      border-radius: 18px 4px 4px 18px;
+    }
+
+    .msg-turn.user .bubble-wrapper:last-child:not(:first-child) .bubble {
+      border-radius: 18px 4px 18px 18px;
+    }
+
+    .msg-turn.target .bubble {
+      background: var(--bubble-target);
+      color: var(--bubble-target-text);
+      border-radius: 18px 18px 18px 4px;
+    }
+
+    .msg-turn.target .bubble-wrapper:not(:first-child) .bubble {
+      border-radius: 4px 18px 18px 4px;
+    }
+
+    .msg-turn.target .bubble-wrapper:last-child:not(:first-child) .bubble {
+      border-radius: 4px 18px 18px 18px;
+    }
+
+    /* Photo Bubble */
+    .photo-bubble {
+      padding: 0;
+      background: transparent !important;
+      border-radius: 18px;
+      overflow: hidden;
+      max-width: 260px;
+    }
+
+    .photo-bubble img {
+      width: 100%;
+      height: auto;
+      max-height: 320px;
+      object-fit: cover;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: zoom-in;
+    }
+
+    /* Heart Pop Effect (Instagram Double Tap) */
+    .heart-pop {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 42px;
+      pointer-events: none;
+      z-index: 50;
+      animation: heartPopAnim 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes heartPopAnim {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
+
+    /* Reaction Badge on Message */
+    .reaction-badge {
+      position: absolute;
+      bottom: -8px;
+      right: 4px;
+      background: #262626;
+      border: 2px solid #000;
+      border-radius: 12px;
+      padding: 1px 6px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      cursor: pointer;
+      z-index: 5;
+      animation: popIn 0.2s ease-out;
+    }
+
+    .msg-turn.target .reaction-badge {
+      right: auto;
+      left: 4px;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.4); }
+      100% { transform: scale(1); }
+    }
+
+    /* Hover Reaction Bar */
+    .reaction-trigger-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #262626;
+      border: 1px solid #333;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #a8a8a8;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 10;
+    }
+
+    .msg-turn.user .reaction-trigger-btn {
+      left: -32px;
+    }
+
+    .msg-turn.target .reaction-trigger-btn {
+      right: -32px;
+    }
+
+    .bubble-wrapper:hover .reaction-trigger-btn {
+      opacity: 1;
+    }
+
+    /* Reaction Picker Popup */
+    .reaction-picker-tray {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      background: #262626;
+      border: 1px solid #363636;
+      border-radius: 24px;
+      padding: 4px 8px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+      z-index: 100;
+      animation: popIn 0.15s ease-out;
+    }
+
+    .reaction-picker-tray.show {
+      display: flex;
+    }
+
+    .msg-turn.user .reaction-picker-tray {
+      right: 0;
+    }
+
+    .msg-turn.target .reaction-picker-tray {
+      left: 0;
+    }
+
+    .reaction-opt {
+      font-size: 20px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+      padding: 2px;
+    }
+
+    .reaction-opt:hover {
+      transform: scale(1.35);
+    }
+
+    /* Feedback edit button */
+    .edit-feedback-btn {
+      opacity: 0;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      border-radius: 12px;
+      font-size: 11px;
+      padding: 3px 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      align-self: flex-start;
+      margin-top: 4px;
+      margin-left: 36px;
+    }
+
+    .target-group-container:hover .edit-feedback-btn {
+      opacity: 0.85;
+    }
+
+    .edit-feedback-btn:hover {
+      opacity: 1 !important;
+      background: rgba(0, 149, 246, 0.2);
+      color: var(--ig-blue);
+      border-color: var(--ig-blue);
+    }
+
+    /* Typing Indicator */
+    .typing-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      align-self: flex-start;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .typing-bubble {
+      background: var(--bubble-target);
+      padding: 11px 16px;
+      border-radius: 18px 18px 18px 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: #8e8e8e;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .dot:nth-child(1) { animation-delay: -0.32s; }
+    .dot:nth-child(2) { animation-delay: -0.16s; }
+    .dot:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+      40% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* Image Attachment Preview Bar */
+    .attachment-preview-bar {
+      display: none;
+      padding: 8px 14px;
+      background: #1a1a1a;
+      border-top: 1px solid var(--border-color);
+      align-items: center;
+      gap: 10px;
+    }
+
+    .attachment-preview-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid #444;
+    }
+
+    .attachment-info {
+      flex: 1;
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    .attachment-remove-btn {
+      background: #333;
+      border: none;
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Quick Emoji Tray */
+    .emoji-tray {
+      display: none;
+      padding: 8px 14px;
+      background: #141414;
+      border-top: 1px solid var(--border-color);
+      overflow-x: auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .emoji-tray.show {
+      display: flex;
+    }
+
+    .emoji-tray-item {
+      font-size: 22px;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .emoji-tray-item:hover {
+      transform: scale(1.3);
+    }
+
+    /* Footer Input */
+    .chat-footer {
+      background: #000;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-bar {
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-action-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s;
+    }
+
+    .footer-action-btn:hover {
+      opacity: 0.7;
+    }
+
+    .input-pill {
+      flex: 1;
+      background: var(--input-bg);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      padding: 2px 14px;
+      border: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .input-pill:focus-within {
+      border-color: #444;
+    }
+
+    .chat-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 14px;
+      padding: 8px 0;
+      font-family: inherit;
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .action-right-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease;
+    }
+
+    .action-right-btn.send-text {
+      color: var(--ig-blue);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .action-right-btn.heart-icon {
+      color: #fff;
+    }
+
+    .action-right-btn:active {
+      transform: scale(0.9);
+    }
+
+    /* Feedback Modal */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-box {
+      background: #1c1c1c;
+      width: 90%;
+      max-width: 440px;
+      border-radius: 18px;
+      border: 1px solid #333;
+      padding: 20px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-box h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .modal-context {
+      font-size: 13px;
+      color: var(--text-muted);
+      background: #262626;
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 3px solid var(--ig-blue);
+    }
+
+    .modal-textarea {
+      width: 100%;
+      height: 90px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      resize: vertical;
+      outline: none;
+    }
+
+    .modal-textarea:focus {
+      border-color: var(--ig-blue);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #444;
+      color: #d1d5db;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .btn-primary {
+      background: var(--ig-blue);
+      border: none;
+      color: #fff;
+      padding: 7px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    /* Lightbox Modal for Image Zoom */
+    .lightbox-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.92);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 300;
+      cursor: zoom-out;
+    }
+
+    .lightbox-img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-40px);
+      background: #262626;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="appContainer">
+    <!-- Header -->
+    <header class="chat-header">
+      <div class="header-left" id="profileHeader">
+        <button class="back-btn" title="Quay lại">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="avatar-wrapper">
+          <img src="/static/avatars/bchhniiee.jpeg" alt="bchhniiee_" class="avatar-img" onerror="this.src='https://ui-avatars.com/api/?name=Bich+Hien&background=333&color=fff'">
+          <span class="status-badge"></span>
+        </div>
+        <div class="user-info">
+          <h2>
+            bchhniiee_
+            <svg class="verified-icon" width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg>
+          </h2>
+          <p>Bích Hiền · Đang hoạt động</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="Gọi thoại">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        </button>
+        <button class="icon-btn" title="Gọi video">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        </button>
+        <button class="icon-btn" id="infoBtn" title="Hồ sơ & Trí nhớ">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Quick Suggestions Bar -->
+    <div class="quick-chips-wrapper">
+      <button class="chip-btn" onclick="sendQuickPrompt('ê tối chơi valo không')">🎮 tối chơi valo</button>
+      <button class="chip-btn" onclick="sendQuickPrompt('thèm đồ ngọt quá')">🍰 thèm đồ ngọt</button>
+      <button class="chip-btn" onclick="sendQuickPrompt('thu đâu rồi')">👀 thu đâu rồi</button>
+      <button class="chip-btn" onclick="sendQuickPrompt('khoa làm thu buồn thì sao')">🥺 thu buồn</button>
+      <button class="chip-btn" onclick="sendQuickPrompt('áo winmart nè')">🛒 áo winmart</button>
+      <button class="chip-btn" onclick="sendQuickPrompt('chốt quà tặng anh kia chưa')">🎁 chốt quà</button>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="burst-status-bar" id="burstStatusBar">⏳ Đang đợi bạn gõ thêm tin nhắn trong chùm... (ấn Gửi để gửi ngay)</div>
+      
+      <!-- Default initial message from Bích Hiền -->
+      <div class="msg-turn target">
+        <div class="target-group-container">
+          <img src="/static/avatars/bchhniiee.jpeg" alt="bchhniiee_" class="target-avatar-mini" onerror="this.src='https://ui-avatars.com/api/?name=Bich+Hien&background=333&color=fff'">
+          <div class="bubbles-stack">
+            <div class="bubble-wrapper">
+              <div class="bubble" onclick="handleBubbleClick(this)">sao á</div>
+            </div>
+            <div class="bubble-wrapper">
+              <div class="bubble" onclick="handleBubbleClick(this)">mới ngủ dậy nè</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attachment Preview Bar -->
+    <div class="attachment-preview-bar" id="attachmentPreviewBar">
+      <img src="" id="attachmentPreviewThumb" class="attachment-preview-thumb">
+      <div class="attachment-info" id="attachmentInfo">Đã đính kèm ảnh</div>
+      <button class="attachment-remove-btn" onclick="clearAttachment()" title="Xóa ảnh">✕</button>
+    </div>
+
+    <!-- Quick Emoji Tray -->
+    <div class="emoji-tray" id="emojiTray">
+      <span class="emoji-tray-item" onclick="insertEmoji('😂')">😂</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('🥺')">🥺</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('❤️')">❤️</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('💀')">💀</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('🙂')">🙂</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('😒')">😒</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('🔥')">🔥</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('👍')">👍</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('😚')">😚</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('🛵')">🛵</span>
+      <span class="emoji-tray-item" onclick="insertEmoji('🎮')">🎮</span>
+    </div>
+
+    <!-- Footer Input Bar -->
+    <footer class="chat-footer">
+      <div class="input-bar">
+        <!-- Hidden file input for photos -->
+        <input type="file" id="imageFileInput" accept="image/*" style="display: none;" onchange="handleImageSelected(event)">
+
+        <!-- Photo gallery button -->
+        <button class="footer-action-btn" onclick="document.getElementById('imageFileInput').click()" title="Gửi ảnh">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </button>
+
+        <!-- Emoji Tray Button -->
+        <button class="footer-action-btn" id="toggleEmojiBtn" onclick="toggleEmojiTray()" title="Emoji">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+
+        <!-- Input Pill -->
+        <div class="input-pill">
+          <input type="text" id="chatInput" class="chat-input" placeholder="Nhắn tin..." autocomplete="off">
+        </div>
+
+        <!-- Dynamic Action Button: Heart (when empty) OR Send Text -->
+        <button class="action-right-btn heart-icon" id="actionBtn" title="Gửi tim">
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="modal-backdrop" id="feedbackModal">
+    <div class="modal-box">
+      <h3>✏️ Dạy AI học lại câu này</h3>
+      <div class="modal-context" id="modalUserContext">Tin nhắn của Khoa: ...</div>
+      <label style="font-size: 12px; color: #a1a1aa;">Câu trả lời chuẩn của Bích Hiền:</label>
+      <textarea id="modalReplyInput" class="modal-textarea" placeholder="Nhập câu trả lời thực tế (dùng <br_msg> để ngắt bong bóng)..."></textarea>
+      <div style="font-size: 11px; color: #8e8e8e;">💡 Mẹo: Nhập nhiều câu nối bằng &lt;br_msg&gt; để tách nhiều bong bóng gõ phím.</div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeFeedbackModal()">Hủy</button>
+        <button class="btn-primary" onclick="submitFeedback()">Lưu & Dạy AI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox-modal" id="lightboxModal" onclick="this.style.display='none'">
+    <img src="" id="lightboxImg" class="lightbox-img">
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">Đã cập nhật!</div>
+
+  <script>
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const actionBtn = document.getElementById('actionBtn');
+    const feedbackModal = document.getElementById('feedbackModal');
+    const modalUserContext = document.getElementById('modalUserContext');
+    const modalReplyInput = document.getElementById('modalReplyInput');
+    const toast = document.getElementById('toast');
+    const burstStatusBar = document.getElementById('burstStatusBar');
+    const attachmentPreviewBar = document.getElementById('attachmentPreviewBar');
+    const attachmentPreviewThumb = document.getElementById('attachmentPreviewThumb');
+    const emojiTray = document.getElementById('emojiTray');
+    const lightboxModal = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightboxImg');
+
+    const chatHistory = [];
+    let isWaitingForResponse = false;
+    let editingContext = null;
+
+    // Attached Image State
+    let attachedImageData = null; // base64 string
+    let attachedImageMime = 'image/jpeg';
+
+    // User Burst State ("nhắn 1 chùm tin nhắn")
+    let burstTimer = null;
+    let burstBuffer = []; // array of { text, image }
+    let currentUserTurnElement = null;
+    let currentUserBubblesStack = null;
+    let lastTapTime = 0;
+
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function toggleEmojiTray() {
+      emojiTray.classList.toggle('show');
+    }
+
+    function insertEmoji(em) {
+      chatInput.value += em;
+      chatInput.focus();
+      updateActionBtnState();
+    }
+
+    function sendQuickPrompt(text) {
+      if (isWaitingForResponse) return;
+      chatInput.value = text;
+      handleUserSubmit();
+    }
+
+    // Dynamic Action Button (Heart vs Send Text)
+    function updateActionBtnState() {
+      const hasText = chatInput.value.trim().length > 0;
+      const hasImage = attachedImageData !== null;
+      if (hasText || hasImage) {
+        actionBtn.className = 'action-right-btn send-text';
+        actionBtn.innerHTML = 'Gửi';
+      } else {
+        actionBtn.className = 'action-right-btn heart-icon';
+        actionBtn.innerHTML = `
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        `;
+      }
+    }
+
+    chatInput.addEventListener('input', updateActionBtnState);
+
+    // Image Upload Handling
+    function handleImageSelected(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      processImageFile(file);
+    }
+
+    function processImageFile(file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Vui lòng chọn file hình ảnh');
+        return;
+      }
+      attachedImageMime = file.type;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        attachedImageData = evt.target.result;
+        attachmentPreviewThumb.src = attachedImageData;
+        attachmentPreviewBar.style.display = 'flex';
+        updateActionBtnState();
+        chatInput.focus();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearAttachment() {
+      attachedImageData = null;
+      attachmentPreviewBar.style.display = 'none';
+      attachmentPreviewThumb.src = '';
+      document.getElementById('imageFileInput').value = '';
+      updateActionBtnState();
+    }
+
+    // Drag and Drop Image onto Chat
+    const appContainer = document.getElementById('appContainer');
+    appContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      appContainer.style.border = '2px dashed var(--ig-blue)';
+    });
+    appContainer.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      appContainer.style.border = '';
+    });
+    appContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      appContainer.style.border = '';
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processImageFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    // Clipboard Paste (Ctrl+V) Image
+    window.addEventListener('paste', (e) => {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (const item of items) {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          processImageFile(file);
+          break;
+        }
+      }
+    });
+
+    // Double tap heart pop & Reaction handling
+    function handleBubbleClick(bubbleEl) {
+      const currentTime = new Date().getTime();
+      const tapGap = currentTime - lastTapTime;
+      if (tapGap < 350 && tapGap > 0) {
+        // Double tap detected! Pop heart & toggle reaction
+        popHeart(bubbleEl);
+        toggleReaction(bubbleEl, '❤️');
+      }
+      lastTapTime = currentTime;
+    }
+
+    function popHeart(bubbleEl) {
+      const heart = document.createElement('div');
+      heart.className = 'heart-pop';
+      heart.textContent = '❤️';
+      bubbleEl.appendChild(heart);
+      setTimeout(() => heart.remove(), 750);
+    }
+
+    function toggleReaction(bubbleEl, emoji) {
+      const wrapper = bubbleEl.closest('.bubble-wrapper');
+      if (!wrapper) return;
+
+      let badge = wrapper.querySelector('.reaction-badge');
+      if (badge && badge.textContent.includes(emoji)) {
+        badge.remove();
+      } else {
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.className = 'reaction-badge';
+          badge.onclick = (e) => { e.stopPropagation(); badge.remove(); };
+          wrapper.appendChild(badge);
+        }
+        badge.textContent = emoji;
+      }
+    }
+
+    function showReactionPicker(btn, bubbleEl) {
+      const wrapper = bubbleEl.closest('.bubble-wrapper');
+      let tray = wrapper.querySelector('.reaction-picker-tray');
+      if (!tray) {
+        tray = document.createElement('div');
+        tray.className = 'reaction-picker-tray';
+        const emojis = ['❤️', '😂', '😮', '😢', '😡', '👍', '🔥', '🙂'];
+        for (const em of emojis) {
+          const span = document.createElement('span');
+          span.className = 'reaction-opt';
+          span.textContent = em;
+          span.onclick = (e) => {
+            e.stopPropagation();
+            toggleReaction(bubbleEl, em);
+            tray.classList.remove('show');
+          };
+          tray.appendChild(span);
+        }
+        wrapper.appendChild(tray);
+      }
+      tray.classList.toggle('show');
+    }
+
+    function zoomImage(src) {
+      lightboxImg.src = src;
+      lightboxModal.style.display = 'flex';
+    }
+
+    // Append single bubble into current user turn
+    function appendUserBubbleToStack(text, imgData) {
+      if (!currentUserTurnElement) {
+        currentUserTurnElement = document.createElement('div');
+        currentUserTurnElement.className = 'msg-turn user';
+
+        currentUserBubblesStack = document.createElement('div');
+        currentUserBubblesStack.className = 'bubbles-stack';
+
+        currentUserTurnElement.appendChild(currentUserBubblesStack);
+        chatMessages.appendChild(currentUserTurnElement);
+      }
+
+      // If photo was sent
+      if (imgData) {
+        const wrap = document.createElement('div');
+        wrap.className = 'bubble-wrapper';
+        const photoDiv = document.createElement('div');
+        photoDiv.className = 'bubble photo-bubble';
+        const img = document.createElement('img');
+        img.src = imgData;
+        img.onclick = () => zoomImage(imgData);
+        photoDiv.appendChild(img);
+        wrap.appendChild(photoDiv);
+        currentUserBubblesStack.appendChild(wrap);
+      }
+
+      // If text was sent
+      if (text) {
+        const wrap = document.createElement('div');
+        wrap.className = 'bubble-wrapper';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.textContent = text;
+        bubble.onclick = () => handleBubbleClick(bubble);
+
+        // Hover reaction button
+        const reactBtn = document.createElement('button');
+        reactBtn.className = 'reaction-trigger-btn';
+        reactBtn.innerHTML = '😊';
+        reactBtn.onclick = (e) => { e.stopPropagation(); showReactionPicker(reactBtn, bubble); };
+
+        wrap.appendChild(bubble);
+        wrap.appendChild(reactBtn);
+        currentUserBubblesStack.appendChild(wrap);
+      }
+
+      scrollToBottom();
+    }
+
+    // User Multi-Message Burst ("nhắn 1 chùm tin nhắn")
+    function handleUserSubmit() {
+      const text = chatInput.value.trim();
+      const hasImage = attachedImageData !== null;
+
+      // If input is empty and no image, clicking the heart button sends a heart sticker!
+      if (!text && !hasImage) {
+        sendInstantHeart();
+        return;
+      }
+
+      // Capture message & image
+      const msgItem = {
+        text: text,
+        image_data: attachedImageData,
+        mime_type: attachedImageMime
+      };
+
+      // Reset input bar immediately so user can keep typing bubble 2, 3...
+      chatInput.value = '';
+      clearAttachment();
+      emojiTray.classList.remove('show');
+      updateActionBtnState();
+
+      // Render bubble immediately onto the user's stack
+      appendUserBubbleToStack(msgItem.text, msgItem.image_data);
+      burstBuffer.push(msgItem);
+
+      // Reset and start burst timer (2.5 seconds debounce)
+      if (burstTimer) clearTimeout(burstTimer);
+      burstStatusBar.style.display = 'block';
+
+      burstTimer = setTimeout(() => {
+        commitAndSendBurst();
+      }, 2400);
+    }
+
+    // Send single Heart instantly
+    function sendInstantHeart() {
+      if (isWaitingForResponse) return;
+      appendUserBubbleToStack('❤️', null);
+      burstBuffer.push({ text: '❤️', image_data: null, mime_type: 'image/jpeg' });
+      if (burstTimer) clearTimeout(burstTimer);
+      commitAndSendBurst();
+    }
+
+    // Commit burst buffer and send to AI backend
+    async function commitAndSendBurst() {
+      if (burstTimer) clearTimeout(burstTimer);
+      burstStatusBar.style.display = 'none';
+
+      if (burstBuffer.length === 0 || isWaitingForResponse) return;
+
+      const itemsToSend = [...burstBuffer];
+      burstBuffer = [];
+      currentUserTurnElement = null; // close current user turn cluster
+      currentUserBubblesStack = null;
+
+      // Combine burst texts with <br_msg>
+      const texts = itemsToSend.map(i => i.text).filter(t => t);
+      const combinedText = texts.join(' <br_msg> ');
+
+      // Pick the image if any
+      const imageItem = itemsToSend.find(i => i.image_data);
+      const imgData = imageItem ? imageItem.image_data : null;
+      const mimeType = imageItem ? imageItem.mime_type : 'image/jpeg';
+
+      isWaitingForResponse = true;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: combinedText,
+            history: chatHistory.slice(-10),
+            image_data: imgData,
+            mime_type: mimeType
+          })
+        });
+
+        if (!res.ok) throw new Error('Lỗi server: ' + res.status);
+        const data = await res.json();
+
+        // Render target sequential bubbles with realistic typing delay
+        await renderTargetTurnWithDelay(combinedText, data.bubbles, data.raw_reply, data.reaction);
+
+      } catch (err) {
+        console.error(err);
+        const errTurn = document.createElement('div');
+        errTurn.className = 'msg-turn target';
+        errTurn.innerHTML = `<div class="bubble" style="background:#4a1515; color:#ffb0b0;">Lỗi kết nối AI: ${err.message}</div>`;
+        chatMessages.appendChild(errTurn);
+        scrollToBottom();
+      } finally {
+        isWaitingForResponse = false;
+        chatInput.focus();
+      }
+    }
+
+    // Realistic Typing Delay Calculation: 0.6 + (chars * 0.05)s
+    function calculateDelayMs(text) {
+      const len = text ? text.length : 0;
+      const delaySec = 0.6 + (len * 0.05);
+      const clamped = Math.min(Math.max(delaySec, 0.7), 4.0);
+      return clamped * 1000;
+    }
+
+    // Render Bích Hiền's turn sequentially with Multi-bubbles & Reactions
+    async function renderTargetTurnWithDelay(userMessage, bubbles, rawReply, aiReaction) {
+      const turnDiv = document.createElement('div');
+      turnDiv.className = 'msg-turn target';
+
+      const groupContainer = document.createElement('div');
+      groupContainer.className = 'target-group-container';
+
+      const avatar = document.createElement('img');
+      avatar.src = '/static/avatars/bchhniiee.jpeg';
+      avatar.className = 'target-avatar-mini';
+      avatar.onerror = function() { this.src = 'https://ui-avatars.com/api/?name=Bich+Hien&background=333&color=fff'; };
+
+      const bubblesStack = document.createElement('div');
+      bubblesStack.className = 'bubbles-stack';
+
+      groupContainer.appendChild(avatar);
+      groupContainer.appendChild(bubblesStack);
+      turnDiv.appendChild(groupContainer);
+      chatMessages.appendChild(turnDiv);
+
+      const typingContainer = document.createElement('div');
+      typingContainer.className = 'typing-container';
+      typingContainer.innerHTML = `
+        <div class="typing-bubble">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      `;
+
+      // If Bích Hiền reacted to Khoa's message (e.g. ❤️ or 😂)
+      if (aiReaction) {
+        attachAiReactionToLastUserTurn(aiReaction);
+      }
+
+      // Sequential multi-bubble display with typing effect
+      for (let i = 0; i < bubbles.length; i++) {
+        const bubbleText = bubbles[i];
+        const delay = calculateDelayMs(bubbleText);
+
+        chatMessages.appendChild(typingContainer);
+        scrollToBottom();
+
+        await new Promise(r => setTimeout(r, delay));
+
+        if (typingContainer.parentNode) {
+          typingContainer.parentNode.removeChild(typingContainer);
+        }
+
+        const wrap = document.createElement('div');
+        wrap.className = 'bubble-wrapper';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.textContent = bubbleText;
+        bubble.onclick = () => handleBubbleClick(bubble);
+
+        const reactBtn = document.createElement('button');
+        reactBtn.className = 'reaction-trigger-btn';
+        reactBtn.innerHTML = '😊';
+        reactBtn.onclick = (e) => { e.stopPropagation(); showReactionPicker(reactBtn, bubble); };
+
+        wrap.appendChild(bubble);
+        wrap.appendChild(reactBtn);
+        bubblesStack.appendChild(wrap);
+        scrollToBottom();
+
+        if (i < bubbles.length - 1) {
+          await new Promise(r => setTimeout(r, 220));
+        }
+      }
+
+      // Edit Button for Feedback Loop
+      const editBtn = document.createElement('button');
+      editBtn.className = 'edit-feedback-btn';
+      editBtn.innerHTML = `
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        Sửa câu này
+      `;
+      editBtn.onclick = () => openFeedbackModal(userMessage, rawReply, turnDiv);
+      turnDiv.appendChild(editBtn);
+
+      chatHistory.push({ role: 'assistant', content: rawReply });
+      scrollToBottom();
+    }
+
+    // Attach AI reaction badge to user's turn
+    function attachAiReactionToLastUserTurn(reactionEmoji) {
+      const userTurns = document.querySelectorAll('.msg-turn.user');
+      if (userTurns.length === 0) return;
+      const lastUserTurn = userTurns[userTurns.length - 1];
+      const lastBubble = lastUserTurn.querySelector('.bubble-wrapper:last-child');
+      if (lastBubble) {
+        toggleReaction(lastBubble.querySelector('.bubble'), reactionEmoji);
+      }
+    }
+
+    // Keyboard & Action events
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleUserSubmit();
+      }
+    });
+
+    actionBtn.addEventListener('click', () => {
+      // If user clicks Send while in a burst, send immediately without waiting
+      if (burstTimer) {
+        clearTimeout(burstTimer);
+      }
+      handleUserSubmit();
+    });
+
+    // Feedback Loop Modal Handlers
+    function openFeedbackModal(userMsg, currentReply, turnElement) {
+      editingContext = { userMsg, currentReply, turnElement };
+      modalUserContext.textContent = "Tin nhắn của Khoa: \"" + userMsg + "\"";
+      modalReplyInput.value = currentReply;
+      feedbackModal.style.display = 'flex';
+      modalReplyInput.focus();
+    }
+
+    function closeFeedbackModal() {
+      feedbackModal.style.display = 'none';
+      editingContext = null;
+    }
+
+    async function submitFeedback() {
+      if (!editingContext) return;
+      const corrected = modalReplyInput.value.trim();
+      if (!corrected) {
+        alert('Vui lòng nhập câu trả lời đã sửa');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_message: editingContext.userMsg,
+            corrected_reply: corrected
+          })
+        });
+
+        if (!res.ok) throw new Error('Lỗi gửi feedback');
+        const data = await res.json();
+
+        const bubblesStack = editingContext.turnElement.querySelector('.bubbles-stack');
+        if (bubblesStack) {
+          bubblesStack.innerHTML = '';
+          const newBubbles = corrected.split('<br_msg>').map(b => b.trim()).filter(b => b);
+          for (const nb of newBubbles) {
+            const wrap = document.createElement('div');
+            wrap.className = 'bubble-wrapper';
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            b.textContent = nb;
+            b.onclick = () => handleBubbleClick(b);
+            wrap.appendChild(b);
+            bubblesStack.appendChild(wrap);
+          }
+        }
+
+        closeFeedbackModal();
+        showToast('✨ Đã học lại câu trả lời thành công! (Tổng: ' + data.total_pairs + ' cặp)');
+
+      } catch (err) {
+        alert('Lỗi: ' + err.message);
+      }
+    }
+
+    // Info modal click
+    document.getElementById('infoBtn').onclick = async () => {
+      try {
+        const res = await fetch('/api/info');
+        const info = await res.json();
+        alert(
+          `HỒ SƠ BỘ NÃO BÍCH HIỀN (@bchhniiee_):\n` +
+          `- Nhân vật: ${info.target_display} (${info.target_username})\n` +
+          `- Người trò chuyện: ${info.user_name} (${info.user_username})\n` +
+          `- Tổng số cặp học máy: ${info.total_pairs.toLocaleString()} cặp\n` +
+          `- Tổng số phiên ký ức (sessions): ${info.total_sessions}\n` +
+          `- Số bong bóng chat trung bình: ${info.metrics.avg_bubbles_per_reply || 2.21}\n` +
+          `- Tỷ lệ viết hoa đầu câu: ${info.metrics.capitalization_start_ratio_pct || 1.57}%\n` +
+          `- Tỷ lệ chấm câu cuối: ${info.metrics.ending_dot_ratio_pct || 0.22}%\n` +
+          `- Hỗ trợ: Gửi ảnh (Multimodal Vision), Thả tim/Double Tap, Nhắn 1 chùm tin nhắn (Burst Grouping).`
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
+  </script>
+</body>
+</html>

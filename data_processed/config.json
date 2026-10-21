@@ -1,0 +1,19 @@
+{
+  "user_aliases": [
+    "Vũ Đình Khoa",
+    "vud49",
+    "vud.49"
+  ],
+  "target_aliases": [
+    "ngyn ngc bich hien",
+    "bchhniiee_",
+    "bchhniiee",
+    "Nguyễn Ngọc Bích Hiền"
+  ],
+  "user_primary_name": "Vũ Đình Khoa",
+  "target_primary_name": "ngyn ngc bich hien",
+  "raw_files": [
+    "data_raw\\discord_messages.json",
+    "data_raw\\instagram_messages.json"
+  ]
+}
